@@ -15,7 +15,7 @@ if [[ ! -f "$CERT_FILE" || ! -f "$KEY_FILE" ]]; then
         -newkey rsa:2048 \
         -keyout "$KEY_FILE" \
         -out "$CERT_FILE" \
-        -subj "/C=BE/ST=Hainaut/L=Mons/O=TungSahurCorp/OU=Web/CN=$DOMAIN"
+        -subj "/C=BE/ST=Hainaut/L=Mons/O=LinuxServerCorp/OU=Web/CN=$DOMAIN"
 else
     echo "[*] Certificat déjà existant pour $DOMAIN, pas de régénération"
 fi
@@ -30,7 +30,7 @@ sudo bash -c "cat > $VHOST_CONF <<EOF
 
 # VirtualHost HTTPS
 <VirtualHost *:443>
-    ServerAdmin mathias.carsault@std.heh.be
+    ServerAdmin quentin.hemeryck@std.heh.be
     DocumentRoot $DOCUMENT_ROOT
     ServerName $DOMAIN
     ErrorLog /var/log/httpd/${CLIENT}_error.log
