@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Chemin d'installation correct
-INSTALL_DIR="/var/www/tungtungsahur.lan/phpMyAdmin"
+INSTALL_DIR="/var/www/linuxserver.lan/phpMyAdmin"
 TARBALL="phpMyAdmin-latest-all-languages.tar.gz"
 DOWNLOAD_URL="https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz"
 
@@ -9,9 +9,9 @@ echo "[*] Installation de wget et tar"
 sudo dnf install -y wget tar > /dev/null 2>&1
 
 # Créer le dossier racine s'il n'existe pas
-sudo mkdir -p /var/www/tungtungsahur.lan
+sudo mkdir -p /var/www/linuxserver.lan
 
-cd /var/www/tungtungsahur.lan
+cd /var/www/linuxserver.lan
 
 echo "[*] Téléchargement de phpMyAdmin"
 sudo wget "$DOWNLOAD_URL" -O "$TARBALL" > /dev/null 2>&1
@@ -27,9 +27,9 @@ sudo rm -f "$TARBALL"
 
 echo "[*] Attribution des droits à apache"
 sudo chown -R apache:apache "$INSTALL_DIR"
-sudo chmod -R 755 /var/www/tungtungsahur.lan/phpMyAdmin
+sudo chmod -R 755 /var/www/linuxserver.lan/phpMyAdmin
 
 echo "[*] Redémarrage du service Apache"
 sudo systemctl restart httpd
 
-echo "phpMyAdmin installé dans $INSTALL_DIR et accessible via https://tungtungsahur.lan/phpMyAdmin"
+echo "phpMyAdmin installé dans $INSTALL_DIR et accessible via https://linuxserver.lan/phpMyAdmin"

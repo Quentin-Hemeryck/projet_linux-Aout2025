@@ -2,7 +2,7 @@
 
 # Variables
 CLIENT=$1
-DOMAIN="$CLIENT.tungtungsahur.lan"
+DOMAIN="$CLIENT.linuxserver.lan"
 DOCUMENT_ROOT="/var/www/$CLIENT"
 VHOST_CONF="/etc/httpd/conf.d/$CLIENT.conf"
 CERT_FILE="/etc/pki/tls/certs/$DOMAIN.crt"

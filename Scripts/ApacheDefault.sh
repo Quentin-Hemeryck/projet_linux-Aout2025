@@ -5,20 +5,20 @@
 cat > /etc/httpd/conf.d/00-default.conf <<EOF
  
 <VirtualHost *:80>
-    ServerName tungtungsahur.lan
-    DocumentRoot /var/www/tungtungsahur.lan
-    Redirect permanent / https://tungtungsahur.lan/
+    ServerName linuxserver.lan
+    DocumentRoot /var/www/linuxserver.lan
+    Redirect permanent / https://linuxserver.lan/
 </VirtualHost>
 
 <VirtualHost *:443>
-    ServerName tungtungsahur.lan
-    DocumentRoot /var/www/tungtungsahur.lan
+    ServerName linuxserver.lan
+    DocumentRoot /var/www/linuxserver.lan
 
     SSLEngine on
-    SSLCertificateFile /etc/ssl/tungtungsahur.lan/tungtungsahur.lan.crt
-    SSLCertificateKeyFile /etc/ssl/tungtungsahur.lan/tungtungsahur.lan.key
+    SSLCertificateFile /etc/ssl/linuxserver.lan/linuxserver.lan.crt
+    SSLCertificateKeyFile /etc/ssl/linuxserver.lan/linuxserver.lan.key
 
-    <Directory /var/www/tungtungsahur.lan>
+    <Directory /var/www/linuxserver.lan>
         AllowOverride All
         Require all granted
     </Directory>

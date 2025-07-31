@@ -61,7 +61,7 @@ fi
 
 
 # Variables
-DOMAIN="$CLIENT.tungtungsahur.lan"
+DOMAIN="$CLIENT.linuxserver.lan"
 
 # Affichage du résumé
 echo "Configuration en cours pour le client : $CLIENT avec le domaine : $DOMAIN"

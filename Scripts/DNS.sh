@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ---------------------- CONFIGURATION ----------------------
-DOMAIN="tungtungsahur.lan"
+DOMAIN="linuxserver.lan"
 REVERSE_ZONE="0.42.10.in-addr.arpa"
 DNS_IP="$(hostname -I | awk '{print $1}')"
 LAST_OCTET="$(echo "$DNS_IP" | awk -F. '{print $4}')"

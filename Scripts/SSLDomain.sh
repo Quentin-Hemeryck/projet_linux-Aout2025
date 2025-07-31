@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-DOMAIN="tungtungsahur.lan"
+DOMAIN="linuxserver.lan"
 DOC_ROOT="/var/www/$DOMAIN"
 SSL_DIR="/etc/ssl/$DOMAIN"
 CONF_FILE="/etc/httpd/conf.d/$DOMAIN.conf"
@@ -26,7 +26,7 @@ cat <<'EOF' > "$DOC_ROOT/index.html"
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue sur tungtungsahur.lan</title>
+    <title>Bienvenue sur linuxserver.lan</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
     <style>
@@ -72,7 +72,7 @@ cat <<'EOF' > "$DOC_ROOT/index.html"
     <div class="container mx-auto px-4 py-8">
         <header class="mb-12 animate-fadeIn" style="animation-delay: 0.2s;">
             <div class="flex justify-between items-center">
-                <div class="logo text-3xl md:text-4xl">tungtungsahur.lan</div>
+                <div class="logo text-3xl md:text-4xl">linuxserver.lan</div>
                 <div class="hidden md:block text-gray-400">
                     <span id="date-time"></span>
                 </div>
@@ -88,42 +88,42 @@ cat <<'EOF' > "$DOC_ROOT/index.html"
                 </h2>
                 <div class="grid-container animate-fadeIn" style="animation-delay: 0.6s;">
                     <!-- Folder 1 -->
-                    <a href="http://tungtungsahur.lan/phpMyAdmin" target="_blank" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-blue-500">
+                    <a href="http://linuxserver.lan/phpMyAdmin" target="_blank" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-blue-500">
                         <i class="fas fa-database text-4xl mb-4 text-blue-400"></i>
                         <h3 class="text-xl font-semibold mb-2">Base de données</h3>
                         <p class="text-gray-400 text-sm">Accès aux données système</p>
                     </a>
 
                     <!-- Folder 2 -->
-                    <a href="http://tungtungsahur.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-green-500">
+                    <a href="http://linuxserver.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-green-500">
                         <i class="fas fa-users text-4xl mb-4 text-green-400"></i>
                         <h3 class="text-xl font-semibold mb-2">Utilisateurs</h3>
                         <p class="text-gray-400 text-sm">Gestion des comptes</p>
                     </a>
 
                     <!-- Folder 3 -->
-                    <a href="http://tungtungsahur.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-yellow-500">
+                    <a href="http://linuxserver.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-yellow-500">
                         <i class="fas fa-file-alt text-4xl mb-4 text-yellow-400"></i>
                         <h3 class="text-xl font-semibold mb-2">Documents</h3>
                         <p class="text-gray-400 text-sm">Fichiers confidentiels</p>
                     </a>
 
                     <!-- Folder 4 -->
-                    <a href="http://tungtungsahur.lan:19999" target="_blank" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-red-500">
+                    <a href="http://linuxserver.lan:19999" target="_blank" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-red-500">
                         <i class="fas fa-shield-alt text-4xl mb-4 text-red-400"></i>
                         <h3 class="text-xl font-semibold mb-2">Monitoring</h3>
                         <p class="text-gray-400 text-sm">Surveiller les ressources</p>
                     </a>
 
                     <!-- Folder 5 -->
-                    <a href="http://tungtungsahur.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-purple-500">
+                    <a href="http://linuxserver.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-purple-500">
                         <i class="fas fa-cogs text-4xl mb-4 text-purple-400"></i>
                         <h3 class="text-xl font-semibold mb-2">Configuration</h3>
                         <p class="text-gray-400 text-sm">Paramètres système</p>
                     </a>
 
                     <!-- Folder 6 -->
-                    <a href="http://tungtungsahur.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-indigo-500">
+                    <a href="http://linuxserver.lan/phpMyAdmin" class="folder-btn bg-gray-800 rounded-lg p-6 hover:bg-gray-700 border-l-4 border-indigo-500">
                         <i class="fas fa-network-wired text-4xl mb-4 text-indigo-400"></i>
                         <h3 class="text-xl font-semibold mb-2">Réseau</h3>
                         <p class="text-gray-400 text-sm">Connexions et serveurs</p>
@@ -148,7 +148,7 @@ cat <<'EOF' > "$DOC_ROOT/index.html"
         </main>
 
         <footer class="text-center text-gray-500 border-t border-gray-800 pt-6 animate-fadeIn" style="animation-delay: 1s;">
-            <p>© 2023 tungtungsahur.lan - Système interne</p>
+            <p>© 2023 linuxserver.lan - Système interne</p>
             <p class="mt-2 text-sm">Version 1.0.3</p>
         </footer>
     </div>

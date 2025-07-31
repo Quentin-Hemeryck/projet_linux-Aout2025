@@ -32,4 +32,4 @@ else
   echo "Firewalld non actif, tu dois ouvrir le port 19999 dans les règles de sécurité AWS si nécessaire."
 fi
 
-echo "Netdata installé. Accès : http://tungtungsahur.lan:19999"
+echo "Netdata installé. Accès : http://linuxserver.lan:19999"

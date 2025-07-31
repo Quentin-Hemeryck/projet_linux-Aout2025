@@ -3,7 +3,7 @@
 sudo dnf install -y bind bind-utils
 
 CLIENT=$1
-DOMAIN="tungtungsahur.lan"
+DOMAIN="linuxserver.lan"
 ZONE_FILE="/var/named/${DOMAIN}.zone"
 DNS_IP="$(hostname -I | awk '{print $1}')"
 
