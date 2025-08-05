@@ -48,23 +48,23 @@ sudo vgcreate vg_raid1 $RAID_DEVICE
 
 # Création des volumes logiques
 echo "[INFO] Création des volumes logiques..."
-sudo lvcreate -L 500M -n share vg_raid1
-sudo mkfs.ext4 /dev/vg_raid1/share
-sudo mkdir -p /mnt/raid1_share
-sudo mount -o noexec,nosuid,nodev /dev/vg_raid1/share /mnt/raid1_share
+sudo lvcreate -L 500M -n nfs_share vg_raid1
+sudo mkfs.ext4 /dev/vg_raid1/nfs_share
+sudo mkdir -p /srv/nfs/share
+sudo mount -o defaults /dev/vg_raid1/nfs_share /srv/nfs/share
 
-UUID_SHARE=$(blkid -s UUID -o value /dev/vg_raid1/share)
-echo "UUID=$UUID_SHARE /mnt/raid1_share ext4 defaults,noexec,nosuid,nodev 0 0" >> /etc/fstab
+UUID_NFS=$(blkid -s UUID -o value /dev/vg_raid1/nfs_share)
+echo "UUID=$UUID_NFS /srv/nfs/share ext4 defaults 0 0" >> /etc/fstab
 
 sudo lvcreate -L 500M -n web vg_raid1
 sudo mkfs.ext4 /dev/vg_raid1/web
-sudo mkdir -p /mnt/raid1_web
-sudo mount -o noexec,nosuid,nodev /dev/vg_raid1/web /mnt/raid1_web
+sudo mkdir -p /var/www
+sudo mount -o defaults /dev/vg_raid1/web /var/www
 
 UUID_WEB=$(blkid -s UUID -o value /dev/vg_raid1/web)
-echo "UUID=$UUID_WEB /mnt/raid1_web ext4 defaults,noexec,nosuid,nodev 0 0" >> /etc/fstab
+echo "UUID=$UUID_WEB /var/www ext4 defaults 0 0" >> /etc/fstab
 
-sudo lvcreate -L 500M -n backup vg_raid1
+sudo lvcreate -L 1G -n backup vg_raid1
 sudo mkfs.ext4 /dev/vg_raid1/backup
 sudo mkdir -p /backup
 sudo mount -o defaults /dev/vg_raid1/backup /backup
