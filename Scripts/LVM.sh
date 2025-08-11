@@ -11,6 +11,12 @@ echo "[INFO] Configuration LVM et RAID"
 # Installation des dépendances
 sudo dnf install -y lvm2 mdadm
 
+# Vérifier si la configuration existe déjà
+if vgs vg_raid1 &>/dev/null; then
+    echo "[INFO] Configuration LVM déjà existante - Script terminé"
+    exit 0
+fi
+
 # Afficher les devices RAID existants
 echo "[INFO] RAID existants :"
 cat /proc/mdstat
@@ -19,13 +25,26 @@ cat /proc/mdstat
 echo "[INFO] Disques disponibles :"
 lsblk -d -o NAME,SIZE,TYPE | grep disk
 
-# Détection automatique des disques non utilisés (excluant sda qui contient généralement l'OS)
-AVAILABLE_DISKS=$(lsblk -d -n -o NAME | grep -E '^sd[b-z]$' | head -2)
+# Détection automatique des disques non utilisés (excluant le disque système)
+# Détecter les disques NVMe et SCSI/SATA disponibles
+NVME_DISKS=$(lsblk -d -n -o NAME | grep -E '^nvme[0-9]+n[0-9]+$' | grep -v nvme0n1 | head -2)
+SATA_DISKS=$(lsblk -d -n -o NAME | grep -E '^sd[b-z]$' | head -2)
+
+# Utiliser les disques NVMe en priorité, sinon les disques SATA
+if [ -n "$NVME_DISKS" ]; then
+    AVAILABLE_DISKS=$NVME_DISKS
+else
+    AVAILABLE_DISKS=$SATA_DISKS
+fi
+
 disk_count=$(echo $AVAILABLE_DISKS | wc -w)
 
 if [ $disk_count -lt 2 ]; then
     echo "[ERROR] Pas assez de disques disponibles pour créer un RAID 1"
-    echo "[INFO] Disques détectés: $AVAILABLE_DISKS"
+    echo "[INFO] Disques NVMe détectés: $NVME_DISKS"
+    echo "[INFO] Disques SATA détectés: $SATA_DISKS"
+    echo "[INFO] Disques sélectionnés: $AVAILABLE_DISKS"
+    echo "[INFO] Nombre de disques: $disk_count"
     exit 1
 fi
 

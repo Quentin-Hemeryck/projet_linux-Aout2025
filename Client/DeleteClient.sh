@@ -153,10 +153,95 @@ else
 fi
 
 if id "$CLIENT" &>/dev/null; then
-    userdel -r "$CLIENT" 2>/dev/null
-    echo "    Utilisateur système '$CLIENT' supprimé"
+    # Récupérer le répertoire home avant suppression (méthode plus fiable)
+    HOME_DIR=$(getent passwd "$CLIENT" | cut -d: -f6)
+    
+    echo "    Répertoire home détecté : $HOME_DIR"
+    
+    # Arrêter tous les processus de l'utilisateur
+    echo "    Arrêt des processus de l'utilisateur '$CLIENT'..."
+    pkill -u "$CLIENT" 2>/dev/null
+    sleep 2
+    pkill -9 -u "$CLIENT" 2>/dev/null
+    
+    # Supprimer l'utilisateur avec son répertoire home
+    echo "    Tentative de suppression avec userdel -r..."
+    if userdel -r "$CLIENT" 2>&1; then
+        echo "    ✓ Utilisateur système '$CLIENT' supprimé avec userdel -r"
+    else
+        echo "    ⚠ Problème avec userdel -r, détails de l'erreur affichés ci-dessus"
+        echo "    Tentative de suppression manuelle..."
+        
+        # Forcer la suppression de l'utilisateur sans le répertoire home
+        if userdel "$CLIENT" 2>/dev/null; then
+            echo "    ✓ Utilisateur système '$CLIENT' supprimé (sans répertoire home)"
+        else
+            echo "    ⚠ Impossible de supprimer l'utilisateur système"
+        fi
+    fi
+    
+    # Vérifier et forcer la suppression du répertoire home s'il existe encore
+    if [[ -n "$HOME_DIR" ]] && [[ -d "$HOME_DIR" ]] && [[ "$HOME_DIR" != "/" ]] && [[ "$HOME_DIR" != "/home" ]] && [[ "$HOME_DIR" =~ ^/home/ ]]; then
+        echo "    Suppression forcée du répertoire home : $HOME_DIR"
+        
+        # Vérifier les processus utilisant ce répertoire
+        if lsof "$HOME_DIR" 2>/dev/null | grep -q "$HOME_DIR"; then
+            echo "    ⚠ Processus actifs détectés dans $HOME_DIR, arrêt forcé..."
+            lsof "$HOME_DIR" 2>/dev/null | awk 'NR>1 {print $2}' | xargs -r kill -9 2>/dev/null
+            sleep 1
+        fi
+        
+        # Changer les permissions pour forcer la suppression
+        chmod -R 755 "$HOME_DIR" 2>/dev/null
+        chattr -R -i "$HOME_DIR" 2>/dev/null  # Supprimer les attributs immutables si présents
+        
+        # Tentative de suppression
+        if rm -rf "$HOME_DIR" 2>/dev/null; then
+            echo "    ✓ Répertoire home supprimé : $HOME_DIR"
+        else
+            echo "    ⚠ ATTENTION: Répertoire home persistant : $HOME_DIR"
+            echo "    Raisons possibles : fichiers verrouillés, attributs spéciaux, ou permissions"
+            echo "    Commandes manuelles à essayer :"
+            echo "      sudo lsof '$HOME_DIR' 2>/dev/null"
+            echo "      sudo chattr -R -i '$HOME_DIR' 2>/dev/null"
+            echo "      sudo rm -rf '$HOME_DIR'"
+        fi
+    else
+        echo "    - Répertoire home non trouvé, invalide ou déjà supprimé"
+    fi
 else
     echo "   - Utilisateur système '$CLIENT' non trouvé"
+    
+    # Vérifier s'il existe un répertoire home orphelin
+    ORPHAN_HOME_DIR="/home/$CLIENT"
+    if [[ -d "$ORPHAN_HOME_DIR" ]]; then
+        echo "    ⚠ Répertoire home orphelin détecté : $ORPHAN_HOME_DIR"
+        echo "    Suppression du répertoire home orphelin..."
+        
+        # Vérifier les processus utilisant ce répertoire
+        if lsof "$ORPHAN_HOME_DIR" 2>/dev/null | grep -q "$ORPHAN_HOME_DIR"; then
+            echo "    ⚠ Processus actifs détectés dans $ORPHAN_HOME_DIR, arrêt forcé..."
+            lsof "$ORPHAN_HOME_DIR" 2>/dev/null | awk 'NR>1 {print $2}' | xargs -r kill -9 2>/dev/null
+            sleep 1
+        fi
+        
+        # Changer les permissions pour forcer la suppression
+        chmod -R 755 "$ORPHAN_HOME_DIR" 2>/dev/null
+        chattr -R -i "$ORPHAN_HOME_DIR" 2>/dev/null  # Supprimer les attributs immutables si présents
+        
+        # Tentative de suppression
+        if rm -rf "$ORPHAN_HOME_DIR" 2>/dev/null; then
+            echo "    ✓ Répertoire home orphelin supprimé : $ORPHAN_HOME_DIR"
+        else
+            echo "    ⚠ ATTENTION: Répertoire home orphelin persistant : $ORPHAN_HOME_DIR"
+            echo "    Commandes manuelles à essayer :"
+            echo "      sudo lsof '$ORPHAN_HOME_DIR' 2>/dev/null"
+            echo "      sudo chattr -R -i '$ORPHAN_HOME_DIR' 2>/dev/null"
+            echo "      sudo rm -rf '$ORPHAN_HOME_DIR'"
+        fi
+    else
+        echo "    - Aucun répertoire home orphelin trouvé"
+    fi
 fi
 
 # Redémarrer Apache pour prendre en compte les changements
