@@ -41,7 +41,7 @@ allow_writeable_chroot=YES
 userlist_enable=YES
 userlist_deny=NO
 
-local_umask=022
+local_umask=002
 user_sub_token=\$USER
 local_root=/var/www/\$USER
 secure_chroot_dir=/var/run/vsftpd/empty
