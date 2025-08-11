@@ -10,7 +10,8 @@ sudo dnf install -y \
   samba samba-client samba-common \
   nfs-utils \
   firewalld \
-  net-tools 
+  net-tools \
+  quota 
 
 # Installer mariadb
 sudo tee /etc/yum.repos.d/MariaDB.repo > /dev/null <<EOF

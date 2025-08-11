@@ -67,7 +67,7 @@ sudo mkdir -p /srv/nfs/share
 sudo mount -o defaults /dev/vg_raid1/nfs_share /srv/nfs/share
 
 UUID_NFS=$(blkid -s UUID -o value /dev/vg_raid1/nfs_share)
-echo "UUID=$UUID_NFS /srv/nfs/share ext4 defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID_NFS /srv/nfs/share ext4 defaults,usrquota,grpquota 0 0" >> /etc/fstab
 
 sudo lvcreate -L 500M -n web vg_raid1
 sudo mkfs.ext4 /dev/vg_raid1/web
@@ -75,7 +75,7 @@ sudo mkdir -p /var/www
 sudo mount -o defaults /dev/vg_raid1/web /var/www
 
 UUID_WEB=$(blkid -s UUID -o value /dev/vg_raid1/web)
-echo "UUID=$UUID_WEB /var/www ext4 defaults 0 0" >> /etc/fstab
+echo "UUID=$UUID_WEB /var/www ext4 defaults,usrquota,grpquota 0 0" >> /etc/fstab
 
 sudo lvcreate -L 1G -n backup vg_raid1
 sudo mkfs.ext4 /dev/vg_raid1/backup
@@ -89,5 +89,12 @@ echo "UUID=$UUID_BACKUP /backup ext4 defaults 0 0" >> /etc/fstab
 sudo mdadm --detail --scan >> /etc/mdadm/mdadm.conf
 
 sudo systemctl daemon-reload
+
+# Initialiser les quotas
+echo "[INFO] Initialisation des quotas..."
+sudo quotacheck -cum /var/www
+sudo quotacheck -cum /srv/nfs/share
+sudo quotaon /var/www
+sudo quotaon /srv/nfs/share
 
 echo "[INFO] Configuration terminée avec succès."

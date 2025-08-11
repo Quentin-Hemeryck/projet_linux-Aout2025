@@ -10,6 +10,10 @@ DB_NAME="$CLIENT"
 DB_USER="$CLIENT"
 DB_PASS=$4
 
+# Limites de quota par défaut (en Ko)
+SOFT_LIMIT=${SOFT_LIMIT:-102400}  # 100 Mo
+HARD_LIMIT=${HARD_LIMIT:-153600}  # 150 Mo
+
 # Créer un utilisateur pour le client
 sudo useradd -m -s /bin/bash $CLIENT
 
@@ -46,3 +50,8 @@ echo "Dossier web : $DOCUMENT_ROOT"
 echo "Utilisateur FTP : $FTP_USER"
 echo "Base de données : $DB_NAME"
 echo "Utilisateur DB : $DB_USER"
+
+# Définition des quotas pour l'utilisateur
+echo "[+] Définition des quotas pour $CLIENT"
+sudo setquota -u "$CLIENT" $SOFT_LIMIT $HARD_LIMIT 0 0 /var/www
+sudo setquota -u "$CLIENT" $SOFT_LIMIT $HARD_LIMIT 0 0 /srv/nfs/share
