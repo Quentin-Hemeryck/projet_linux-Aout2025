@@ -28,6 +28,7 @@ echo "  - Accès FTP"
 echo "  - Base de données MySQL/MariaDB"
 echo "  - Entrée DNS"
 echo "  - Certificats SSL"
+echo "  - Quotas utilisateur"
 echo ""
 read -p "Êtes-vous sûr de vouloir continuer ? (oui/non) : " CONFIRM
 
@@ -132,8 +133,18 @@ else
     echo "   - Entrée DNS non trouvée dans $ZONE_FILE"
 fi
 
-# 8. Supprimer le répertoire web et l'utilisateur système
-echo "[8/8] Suppression du répertoire web et de l'utilisateur système..."
+# 8. Supprimer les quotas utilisateur
+echo "[8/9] Suppression des quotas utilisateur..."
+if id "$CLIENT" &>/dev/null; then
+    sudo setquota -u "$CLIENT" 0 0 0 0 /var/www 2>/dev/null
+    sudo setquota -u "$CLIENT" 0 0 0 0 /srv/nfs/share 2>/dev/null
+    echo "    Quotas supprimés pour '$CLIENT'"
+else
+    echo "   - Utilisateur '$CLIENT' non trouvé pour suppression des quotas"
+fi
+
+# 9. Supprimer le répertoire web et l'utilisateur système
+echo "[9/9] Suppression du répertoire web et de l'utilisateur système..."
 if [[ -d "$DOCUMENT_ROOT" ]]; then
     rm -rf "$DOCUMENT_ROOT"
     echo "    Répertoire web supprimé : $DOCUMENT_ROOT"
