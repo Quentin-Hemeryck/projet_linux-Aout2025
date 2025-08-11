@@ -33,6 +33,7 @@ sudo chmod +x ./*.sh
 
 # Appeler les modules
 
+sudo ./LVM.sh
 sudo ./DNS.sh
 sudo ./ApacheDefault.sh
 sudo ./SSH.sh

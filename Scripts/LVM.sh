@@ -19,23 +19,36 @@ cat /proc/mdstat
 echo "[INFO] Disques disponibles :"
 lsblk -d -o NAME,SIZE,TYPE | grep disk
 
-# Demander à l'utilisateur le nom du device RAID à créer
-read -p "Nom du device RAID à créer (ex: md0, md1) : " RAID_NAME
-RAID_DEVICE="/dev/$RAID_NAME"
+# Détection automatique des disques non utilisés (excluant sda qui contient généralement l'OS)
+AVAILABLE_DISKS=$(lsblk -d -n -o NAME | grep -E '^sd[b-z]$' | head -2)
+disk_count=$(echo $AVAILABLE_DISKS | wc -w)
 
-# Demander à l'utilisateur les disques à utiliser
-read -p "Entrez 2 disques pour le RAID 1 (ex: sdb sdc) : " DISKS
-disk_count=$(echo $DISKS | wc -w)
-
-if [ $disk_count -ne 2 ]; then
-    echo "[ERROR] Le RAID 1 nécessite exactement 2 disques"
+if [ $disk_count -lt 2 ]; then
+    echo "[ERROR] Pas assez de disques disponibles pour créer un RAID 1"
+    echo "[INFO] Disques détectés: $AVAILABLE_DISKS"
     exit 1
 fi
 
-RAID_DISKS=""
-for disk in $DISKS; do
-    RAID_DISKS="$RAID_DISKS /dev/$disk"
-done
+# Utiliser les 2 premiers disques disponibles
+DISK_ARRAY=($AVAILABLE_DISKS)
+DISK1=${DISK_ARRAY[0]}
+DISK2=${DISK_ARRAY[1]}
+
+echo "[INFO] Utilisation des disques: $DISK1 et $DISK2"
+
+# Déterminer automatiquement le prochain device RAID disponible
+RAID_NAME="md0"
+if [ -e "/dev/md0" ]; then
+    RAID_NAME="md1"
+    if [ -e "/dev/md1" ]; then
+        RAID_NAME="md2"
+    fi
+fi
+
+RAID_DEVICE="/dev/$RAID_NAME"
+RAID_DISKS="/dev/$DISK1 /dev/$DISK2"
+
+echo "[INFO] Création du RAID $RAID_NAME avec les disques $DISK1 et $DISK2"
 
 # Créer le RAID 1
 echo "[INFO] Création du RAID 1..."
