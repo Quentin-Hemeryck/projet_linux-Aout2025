@@ -113,6 +113,14 @@ UUID_WEB=$(blkid -s UUID -o value /dev/vg_raid1/web)
 grep -q "$UUID_WEB" /etc/fstab || echo "UUID=$UUID_WEB /var/www ext4 defaults,usrquota,grpquota 0 0" >> /etc/fstab
 sudo mount /var/www 2>/dev/null || sudo mount -o remount,usrquota,grpquota /var/www
 
+# Assurer la présence du DocumentRoot par défaut
+sudo mkdir -p /var/www/html
+sudo chown apache:apache /var/www/html
+sudo chmod 755 /var/www/html
+
+# (Optionnel) Créer une page de test
+echo "<h1>Apache fonctionne !</h1>" | sudo tee /var/www/html/index.html > /dev/null
+
 if ! lvs | grep -q "backup"; then
     sudo lvcreate -L 1G -n backup vg_raid1
     sudo mkfs.ext4 /dev/vg_raid1/backup
