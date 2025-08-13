@@ -66,7 +66,7 @@ if [ -d "$DOCUMENT_ROOT" ]; then
 fi
 sudo rm -f "$CERT_FILE" "$KEY_FILE" && echo "[✓] Certificats SSL supprimés"
 
-# 1bis. Création d'un VirtualHost de blocage pour éviter d'afficher la page de gestion
+# 1bis. Création d'un VirtualHost de blocage
 BLOCK_VHOST="/etc/httpd/conf.d/${CLIENT}_blocked.conf"
 sudo bash -c "cat > $BLOCK_VHOST <<EOF
 <VirtualHost *:80>
@@ -93,12 +93,15 @@ if [ -f "$ZONE_FILE" ] && grep -q "^$CLIENT\s" "$ZONE_FILE"; then
     sudo systemctl restart named
 fi
 
-# 3. Suppression Base de données
+# 3. Suppression Base de données + utilisateur MariaDB
 if [ -f /root/.mariadb_root_pass ]; then
     MYSQL_ROOT_PWD=$(cat /root/.mariadb_root_pass)
-    sudo mysql -uroot -p"$MYSQL_ROOT_PWD" -e "DROP DATABASE IF EXISTS \`$DB_NAME\`;"
-    sudo mysql -uroot -p"$MYSQL_ROOT_PWD" -e "DROP USER IF EXISTS '$DB_USER'@'localhost';"
-    sudo mysql -uroot -p"$MYSQL_ROOT_PWD" -e "FLUSH PRIVILEGES;"
+    sudo mysql -u root -p"$MYSQL_ROOT_PWD" <<EOF
+DROP DATABASE IF EXISTS \`$DB_NAME\`;
+DROP USER IF EXISTS '$DB_USER'@'localhost';
+DROP USER IF EXISTS '$DB_USER'@'%';
+FLUSH PRIVILEGES;
+EOF
     echo "[✓] Base de données et utilisateur MariaDB supprimés"
 else
     echo "[!] Impossible de trouver le mot de passe root MariaDB (/root/.mariadb_root_pass)"
