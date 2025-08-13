@@ -2,7 +2,7 @@
 
 # Variables
 IP_SRV="$(hostname -I | awk '{print $1}')"
-IP_ADMIN="192.168.42.2"
+IP_ADMIN="172.20.10.2"
 
 echo "Installation de Fail2Ban..."
 
