@@ -9,6 +9,9 @@ sudo systemctl enable --now docker
 echo "Ajout de ec2-user au groupe docker"
 sudo usermod -aG docker ec2-user
 
+# [AJOUT] Nettoyage : supprimer un conteneur Netdata existant pour éviter le conflit
+sudo docker rm -f netdata >/dev/null 2>&1 || true
+
 echo "Déploiement du conteneur Netdata"
 sudo docker run -d --name=netdata \
   -p 19999:19999 \
@@ -26,7 +29,10 @@ sudo docker run -d --name=netdata \
 
 echo "Ouverture du port 19999 dans Firewalld si actif"
 if systemctl is-active --quiet firewalld; then
+  # règle existante (zone par défaut)
   sudo firewall-cmd --permanent --add-port=19999/tcp
+  # [AJOUT] aussi dans la zone docker si elle est active
+  sudo firewall-cmd --zone=docker --permanent --add-port=19999/tcp >/dev/null 2>&1 || true
   sudo firewall-cmd --reload
 else
   echo "Firewalld non actif, tu dois ouvrir le port 19999 dans les règles de sécurité AWS si nécessaire."
