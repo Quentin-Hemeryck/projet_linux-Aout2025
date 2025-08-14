@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# Script : DeleteClient.sh
-# Description : Suppression complète d'un client (web, FTP, Samba, DNS, DB, /home, blocage domaine)
-# Auteur : Projet Linux - 2025
-
 clear
 echo "=== Suppression complète d'un client ==="
 
